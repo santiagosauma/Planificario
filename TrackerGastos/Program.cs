@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TrackerGastos.Models;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -7,7 +8,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 // DI
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection")));
+
+// Load additional configuration
+builder.Configuration.AddJsonFile("appsettings.Secret.json", optional: true, reloadOnChange: true);
+
+// Register Syncfusion license from configuration
+var licenseKey = builder.Configuration["LicenseKeySyncfusion"];
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(licenseKey);
 
 var app = builder.Build();
 
