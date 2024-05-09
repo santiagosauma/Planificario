@@ -9,7 +9,7 @@ namespace TrackerGastos.Models
         public int CategoryID { get; set; }
         
         [Column(TypeName = "nvarchar(50)")]
-        public int Title { get; set; }
+        public string Title { get; set; }
 
         [Column(TypeName = "nvarchar(5)")]
         public string Icon { get; set; } = "";
