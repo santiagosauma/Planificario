@@ -43,29 +43,32 @@ namespace TrackerGastos.Controllers
         }
 
         // GET: Category/Create
-        public IActionResult AddOrEdit(int? id = 0)
+        public async Task<IActionResult> AddOrEdit(int? id = 0)
         {
             if (id == 0)
                 return View(new Category());
             else
-                return View(_context.Categories.Find(id));
+                return View(await _context.Categories.FindAsync(id)); // Usar FindAsync para cargar asincrónicamente
         }
 
         // POST: Category/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddOrEdit([Bind("CategoryID,Title,Icon,Type")] Category category)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
+                if (category.CategoryID == 0)
+                    _context.Add(category);
+                else
+                    _context.Update(category);
+
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(category);
         }
+
 
         // GET: Category/Delete/5
         public async Task<IActionResult> Delete(int? id)
