@@ -59,9 +59,6 @@ namespace Expense_Tracker.Controllers
                 .OrderByDescending(l => l.amount)
                 .ToList();
 
-            //Spline Chart - Income vs Expense
-
-            //Income
             List<SplineChartData> IncomeSummary = SelectedTransactions
                 .Where(i => i.Category.Type == "Income")
                 .GroupBy(j => j.Date)
@@ -72,7 +69,6 @@ namespace Expense_Tracker.Controllers
                 })
                 .ToList();
 
-            //Expense
             List<SplineChartData> ExpenseSummary = SelectedTransactions
                 .Where(i => i.Category.Type == "Expense")
                 .GroupBy(j => j.Date)
@@ -83,7 +79,6 @@ namespace Expense_Tracker.Controllers
                 })
                 .ToList();
 
-            //Combine Income & Expense
             string[] Last7Days = Enumerable.Range(0, 7)
                 .Select(i => StartDate.AddDays(i).ToString("dd-MMM"))
                 .ToArray();
@@ -99,18 +94,10 @@ namespace Expense_Tracker.Controllers
                                           income = income == null ? 0 : income.income,
                                           expense = expense == null ? 0 : expense.expense,
                                       };
-            //Recent Transactions
-            ViewBag.RecentTransactions = await _context.Transactions
-                .Include(i => i.Category)
-                .OrderByDescending(j => j.Date)
-                .Take(5)
-                .ToListAsync();
-
 
             return View();
         }
     }
-
     public class SplineChartData
     {
         public string day;
